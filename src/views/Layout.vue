@@ -1,0 +1,43 @@
+<template>
+  <div class="layout">
+    <NavBar />
+    <div class="main-container">
+      <SideMenu />
+      <main class="main-content">
+        <router-view></router-view>
+        <!-- Aquí se renderizarán las vistas específicas -->
+      </main>
+    </div>
+  </div>
+</template>
+
+<script>
+import NavBar from "../components/NavBar.vue";
+
+export default {
+  name: "Layout",
+  components: {
+    NavBar,
+  },
+};
+</script>
+
+<style scoped>
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.main-container {
+  display: flex;
+  flex-grow: 1;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+  margin-left: 250px; /* Ajuste para el menú lateral */
+  margin-top: 60px; /* Ajuste para la barra de navegación */
+}
+</style>
