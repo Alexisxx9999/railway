@@ -1,44 +1,48 @@
 <!-- src/views/Register.vue -->
 <template>
   <div class="signup-container">
-    <div class="signup-image">
-      <img src="../assets/mascota2.jpg" alt="Imagen de una mascota" />
-    </div>
     <div class="signup-form">
-      <div class="logo">
-        <img src="../assets/logo.png" alt="Logo" />
+      <div class="signup-image">
+        <img src="../assets/mascota2.jpg" alt="Pet Image" />
       </div>
-      <h2>Regístrate</h2>
-      <form @submit.prevent="handleSignUp">
-        <div class="form-group">
-          <label for="name">Nombre:</label>
-          <input type="text" id="name" v-model="name" required />
-        </div>
-        <div class="form-group">
-          <label for="email">Correo Electrónico:</label>
-          <input type="email" id="email" v-model="email" required />
-        </div>
-        <div class="form-group">
-          <label for="password">Contraseña:</label>
-          <input type="password" id="password" v-model="password" required />
-        </div>
-        <div class="form-group">
-          <label for="confirmPassword">Confirmar Contraseña:</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            v-model="confirmPassword"
-            required
-          />
-        </div>
-        <router-link to="/">
-          <button type="submit">Registrarse</button>
-        </router-link>
-      </form>
+      <div class="signup-fields">
+        <img src="../assets/logo.png" class="img" alt="" />
+
+        <p>Crea una cuenta en pet pocket</p>
+        <form @submit.prevent="signUp">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" v-model="name" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" v-model="email" required />
+          </div>
+          <div class="form-group">
+            <label for="cedula">Cédula</label>
+            <input type="text" id="cedula" v-model="cedula" required />
+          </div>
+          <div class="form-group">
+            <label for="telefono">Teléfono</label>
+            <input type="text" id="telefono" v-model="telefono" required />
+          </div>
+          <div class="form-group">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" v-model="password" required />
+          </div>
+          <router-link to="/">
+            <button type="submit" class="btn btn-primary">Registrate</button>
+          </router-link>
+        </form>
+
+        <p>
+          ¿Ya tienes una cuenta?
+          <router-link to="/">Haz click aquí </router-link>
+        </p>
+      </div>
     </div>
   </div>
 </template>
-<!-- <p>Already have an account? <router-link to="/">Login</router-link></p> -->
 
 <script>
 export default {
@@ -62,37 +66,54 @@ export default {
 <style scoped>
 .signup-container {
   display: flex;
-  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  height: 90%;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
+.signup-form {
+  display: flex;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  max-width: 1000px;
+  width: 100%;
+}
+.signup-form a {
+  text-decoration: none;
+}
 .signup-image {
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: #f0f0f0;
 }
-
+.img {
+  padding: 10px;
+  margin-bottom: 5px;
+  height: 80px;
+  width: 85%;
+}
 .signup-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.signup-form {
+.signup-fields {
   flex: 1;
+  padding: 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  padding: 40px;
-  background-color: #ffffff;
-}
-
-.signup-form h2 {
-  margin-bottom: 20px;
 }
 
 .form-group {
-  margin-bottom: 15px;
-  width: 100%;
+  margin-bottom: 20px;
 }
 
 .form-group label {
@@ -103,20 +124,42 @@ export default {
 .form-group input {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  box-sizing: border-box;
 }
 
-button {
-  padding: 10px 20px;
-  background-color: #42a5f5;
-  color: white;
+.btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #f7a518;
   border: none;
-  border-radius: 4px;
+  color: white;
+  font-size: 16px;
   cursor: pointer;
+  margin-top: 10px;
 }
 
-button:hover {
-  background-color: #1e88e5;
+.btn:hover {
+  background-color: #e69617;
+}
+
+.signup-fields h1 {
+  margin-bottom: 10px;
+}
+
+.signup-fields p {
+  margin-top: 20px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .signup-form {
+    flex-direction: column;
+  }
+
+  .signup-image {
+    height: 200px;
+    background-size: cover;
+  }
 }
 </style>
