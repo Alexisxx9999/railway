@@ -63,6 +63,7 @@ export default {
 .signup-container {
   display: flex;
   height: 100vh;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .signup-image {

@@ -27,6 +27,7 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .main-container {

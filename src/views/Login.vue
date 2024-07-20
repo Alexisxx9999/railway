@@ -47,10 +47,12 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .login-container {
   display: flex;
   height: 100vh;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .login-image {

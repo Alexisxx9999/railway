@@ -5,37 +5,37 @@
     <p>Descripción corta</p>
     <div class="statistic">100</div>
     <router-link to="dashboard/usuarios">
-      <p>usuarios</p>
+      <p>Usuarios</p>
     </router-link>
   </div>
 
   <div class="card">
     <div class="icon">&#x1f4c8;</div>
-    <h2>mascotas</h2>
+    <h2>Mascotas</h2>
     <p>Descripción breve</p>
     <div class="statistic">200</div>
     <router-link to="dashboard/mascotas">
-      <p>mascotas</p>
+      <p>Mascotas</p>
     </router-link>
   </div>
 
   <div class="card">
     <div class="icon">&#x1f4b0;</div>
-    <h2>vacunas</h2>
+    <h2>Vacunas</h2>
     <p>Otra descripción</p>
     <div class="statistic">300</div>
     <router-link to="dashboard/vacunas">
-      <p>vacunas</p>
+      <p>Vacunas</p>
     </router-link>
   </div>
 
   <div class="card">
     <div class="icon">&#x1f680;</div>
-    <h2>adopciones</h2>
+    <h2>Adopciones</h2>
     <p>Descripción genérica</p>
     <div class="statistic">400</div>
     <router-link to="dashboard/adopciones">
-      <p>adopciones</p>
+      <p>Adopciones</p>
     </router-link>
   </div>
 </template>
@@ -46,6 +46,7 @@ export default {
 };
 </script>
 <style scoped>
+
 .card {
   width: 150px;
   background-color: #f0f0f0;
@@ -57,6 +58,7 @@ export default {
   display: inline-block;
   vertical-align: top;
   text-align: center;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 .card h2 {
   margin-top: 0;

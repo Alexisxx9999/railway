@@ -183,11 +183,13 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .content {
   margin-left: 50px;
   padding: 20px;
   width: calc(100% - 270px);
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 p {
   position: absolute;
