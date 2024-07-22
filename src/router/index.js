@@ -9,6 +9,8 @@ import HistorialMedico from "../views/HistorialMedico.vue";
 import Usuarios from "../views/Usuarios.vue";
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
+import DetalleMascota from "../views/DetalleMascota.vue";
+import DetalleUsuario from "../views/DetalleUsuario.vue";
 const routes = [
   { path: "/", name: "Login", component: Login },
   { path: "/register", name: "Register", component: Register },
@@ -30,6 +32,16 @@ const routes = [
         component: HistorialMedico,
       },
       { path: "usuarios", name: "Usuarios", component: Usuarios },
+      {
+        path: "detalleMascota/:id",
+        name: "detalleMascota",
+        component: DetalleMascota, // Aquí va el componente correspondiente
+      },
+      {
+        path: "detalleUsuario/:id",
+        name: "detalleUsuario",
+        component: DetalleUsuario, // Aquí va el componente correspondiente
+      },
     ],
   },
 ];

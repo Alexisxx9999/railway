@@ -2,7 +2,6 @@
   <div class="content">
     <div class="header-container">
       <h1>Registro Médico</h1>
-      <p>Detalle de mascota</p>
       <div class="user-info">
         <span>Usuario Admin</span>
       </div>
@@ -200,6 +199,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .content {
   margin-left: 50px;
@@ -207,7 +207,18 @@ export default {
   width: calc(100% - 270px);
 }
 
-.header h1 {
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #d1d8dd;
+  padding: 25px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-container h1 {
   margin: 0;
   font-size: 24px;
 }
@@ -243,7 +254,7 @@ tr:nth-child(even) {
 }
 
 tr:hover {
-  background-color: #f1f1f1;
+  background-color: #8881817e;
 }
 
 .actions i {
@@ -256,17 +267,18 @@ tr:hover {
 }
 
 .back-button,
-.search-button {
+.add-button {
   padding: 10px 15px;
   border: none;
   border-radius: 4px;
   background-color: #007bff;
   color: #fff;
   cursor: pointer;
+  margin-left: 10px;
 }
 
 .back-button:hover,
-.search-button:hover {
+.add-button:hover {
   background-color: #0056b3;
 }
 
@@ -296,7 +308,7 @@ tr:hover {
 }
 
 .form-container {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -308,6 +320,8 @@ tr:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 400px; /* Añadido para limitar el ancho máximo del formulario */
+  width: 1000%; /* Añadido para asegurar que ocupe el ancho completo del contenedor */
 }
 
 .form-container h2 {
@@ -356,4 +370,3 @@ tr:hover {
   background-color: #0056b3;
 }
 </style>
-<!-- name: "HistorialMedico", -->
