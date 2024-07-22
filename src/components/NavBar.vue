@@ -1,64 +1,93 @@
 <template>
-  <div>
-    <!-- Barra de Navegación Superior -->
-<nav class="nav-bar">
-  <router-link to="/dashboard">
-    <div class="logo">
-      <img src="../assets/logo.png" alt="Logo" />
-    </div>
-  </router-link>
-
-  <nav>
-    <ul class="menu-horizontal">
-      <li>
-        <a href="#">
-          <i class="fas fa-user-circle"></i>
-          <span class="nav-text">Usuario Admin</span>
-        </a>
-        <ul class="menu-vertical">
-          <li><a href="#"><i class="fas fa-sign-out-alt"></i><router-link to="/">Cerrar sesión</router-link></a></li>
-        </ul>
-      </li>
-    </ul>
-  </nav>
-</nav>
-
-
-    <!--  <nav class="nav-bar">
+  <!-- Barra de Navegación Superior -->
+  <nav class="nav-bar">
+    <router-link to="/dashboard">
       <div class="logo">
         <img src="../assets/logo.png" alt="Logo" />
       </div>
-      <div class="user-info">
-        <i class="fas fa-user-circle"></i>
-        <span class="user-text">usuario admin</span>
-        <router-link to="/"><i class="fas fa-paw"></i> Salir</router-link>
-      </div>
-    </nav> -->
+    </router-link>
 
-    <!-- Contenedor del Menú Lateral y del Contenido Principal -->
-    
-    <div class="sidebar">
-      <aside class="side-menu">
-        <div class="profile-info">
+    <nav>
+      <ul class="menu-horizontal">
+        <li>
+          <a href="#">
+            <i class="fas fa-user-circle"></i>
+            <span class="nav-text">Usuario Admin</span>
+          </a>
+          <ul class="menu-vertical">
+            <li>
+              <a href="#"
+                ><i class="fas fa-sign-out-alt"></i
+                ><router-link to="/">Cerrar sesión</router-link></a
+              >
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </nav>
 
-          <br><br><br>         
-          <div class="imgbox"><img class="foto" src="https://i.pinimg.com/originals/90/eb/90/90eb907fde3833db6c0b58cbfae30f82.jpg" alt="" height="200" width="270">
-            
-          </div>
+  <div class="sidebar">
+    <aside class="side-menu">
+      <div class="profile-info">
+        <br /><br /><br />
+        <div class="imgbox">
+          <img
+            class="foto"
+            src="https://i.pinimg.com/originals/90/eb/90/90eb907fde3833db6c0b58cbfae30f82.jpg"
+            alt=""
+            height="200"
+            width="270"
+          />
         </div>
-        <ol class="Navbar">
-          <li><a href="#"><router-link to="/dashboard"><i class="fas fa-tv"></i>Dashboard</router-link></a></li>
-          <li><a href="#"><router-link to="/dashboard/mascotas"><i class="fas fa-paw"></i>Mascotas</router-link></a></li>
-          <li><a href="#"><router-link to="/dashboard/vacunas"><i class="fas fa-syringe"></i>Vacunas</router-link></a></li>
-          <li><a href="#"><router-link to="/dashboard/adopciones"><i class="fas fa-heart"></i>Adopciones</router-link></a></li>
-          <li><a href="#"><router-link to="/dashboard/historial-medico"><i class="fas fa-folder"></i>Historial Medico</router-link>
-          </a></li>
-          <li><a href="#"><router-link to="/dashboard/usuarios"><i class="far fa-address-book"></i>Usuarios</router-link></a></li>
-        </ol>
-      
-      </aside>
-      <!-- Menú Lateral -->
-      <!--   <aside class="side-menu">
+      </div>
+      <ol class="Navbar">
+        <li>
+          <a href="#"
+            ><router-link to="/dashboard"
+              ><i class="fas fa-tv"></i>Dashboard</router-link
+            ></a
+          >
+        </li>
+        <li>
+          <a href="#"
+            ><router-link to="/dashboard/mascotas"
+              ><i class="fas fa-paw"></i>Mascotas</router-link
+            ></a
+          >
+        </li>
+        <li>
+          <a href="#"
+            ><router-link to="/dashboard/vacunas"
+              ><i class="fas fa-syringe"></i>Vacunas</router-link
+            ></a
+          >
+        </li>
+        <li>
+          <a href="#"
+            ><router-link to="/dashboard/adopciones"
+              ><i class="fas fa-heart"></i>Adopciones</router-link
+            ></a
+          >
+        </li>
+        <li>
+          <a href="#"
+            ><router-link to="/dashboard/historial-medico"
+              ><i class="fas fa-folder"></i>Historial Medico</router-link
+            >
+          </a>
+        </li>
+        <li>
+          <a href="#"
+            ><router-link to="/dashboard/usuarios"
+              ><i class="far fa-address-book"></i>Usuarios</router-link
+            ></a
+          >
+        </li>
+      </ol>
+    </aside>
+    <!-- Menú Lateral -->
+    <!--   <aside class="side-menu">
         <div class="profile-info">
           <i class="fas fa-user-circle"></i>
           <div>
@@ -100,9 +129,8 @@
         </ul>
       </aside> -->
 
-      <!-- Contenido Principal -->
-      <main class="main-content"></main>
-    </div>
+    <!-- Contenido Principal -->
+    <main class="main-content"></main>
   </div>
 </template>
 
@@ -112,7 +140,6 @@ export default {
 };
 </script>
 <style scoped>
-
 /* Estilos de la barra de navegación superior */
 .nav-bar {
   display: flex;
@@ -179,7 +206,7 @@ export default {
 
 .menu-vertical li a {
   display: flex;
-  align-items: center; 
+  align-items: center;
   color: black;
   padding: 15px 20px;
   text-decoration: none;
@@ -188,78 +215,76 @@ export default {
 
 /* Contenedor principal */
 
-
 /* Estilos del menú lateral */
-*{
-  margin: 500;
+* {
   padding: 0;
   box-sizing: border-box;
-  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
+
 .side-menu {
   width: 100%;
   min-width: 15%;
   max-width: 220px;
-  height: 100%;
   background: rgba(45, 53, 60, 1);
-  position: absolute;
-  z-index: 1;
+  position: fixed;
+  z-index: 100;
   transition: 0.3s ease-in-out;
+  height: 260%;
 }
 
-.sidebar .imgbox{
-    position: relative;
-    height: 150px;
-    width: 100%;
-    margin-bottom: 20px;
-    z-index: -1;
+.sidebar .imgbox {
+  position: relative;
+  height: 150px;
+  width: 100%;
+
+  margin-bottom: 20px;
+  z-index: -1;
 }
 
-.sidebar .imgbox img{
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    padding: 5px;
-    border-radius: 12px;
+.sidebar .imgbox img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  padding: 5px;
+  border-radius: 12px;
 }
 
-.sidebar .Navbar{
-    width: 100%;
-    padding: 0 10px;
-    list-style: none;
+.sidebar .Navbar {
+  width: 100%;
+  padding: 0 10px;
+  list-style: none;
 }
 
-.sidebar .Navbar li{
-    width: 100%;
-    display: inline-flex;
-    margin: 5px 0;
+.sidebar .Navbar li {
+  width: 100%;
+  display: inline-flex;
+  margin: 5px 0;
 }
-.sidebar .Navbar li a{
-    width: 100%;
-    display: inline-flex;
-    text-decoration: none;
-    text-transform: capitalize;
-    color: white;
-    padding: 5px 8px;
-    border-radius: 10px;
+.sidebar .Navbar li a {
+  width: 100%;
+  display: inline-flex;
+  text-decoration: none;
+  text-transform: capitalize;
+  color: white;
+  padding: 5px 8px;
+  border-radius: 10px;
 }
-.sidebar .Navbar li:hover a{
-    background: rgba(150, 175, 198, 1);
-    color: #fff;
+.sidebar .Navbar li:hover a {
+  background: rgba(150, 175, 198, 1);
+  color: #fff;
 }
-.sidebar .Navbar li a i{
-    margin: auto 0;
-    font-size: 20px;
-    width: 40px;
-    text-align: center;
+.sidebar .Navbar li a i {
+  margin: auto 0;
+  font-size: 20px;
+  width: 40px;
+  text-align: center;
 }
-.sidebar .Navbar li a p{
-    font-size: 20px;
-    transform: scale(1);
-    transform-origin: left;
-    transition: 0.3s;
+.sidebar .Navbar li a p {
+  font-size: 20px;
+  transform: scale(1);
+  transform-origin: left;
+  transition: 0.3s;
 }
-
-
 </style>

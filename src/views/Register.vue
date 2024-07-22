@@ -66,16 +66,13 @@ export default {
 <style scoped>
 .signup-container {
   display: flex;
-<<<<<<< HEAD
   height: 100vh;
-  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-=======
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   justify-content: center;
   align-items: center;
   height: 90%;
   padding: 20px;
   box-sizing: border-box;
->>>>>>> 6fc2524411a53930ffbc9a6e8272d51d614c5698
 }
 
 .signup-form {

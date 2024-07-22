@@ -56,9 +56,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
-<<<<<<< HEAD
-  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-=======
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   padding: 20px;
   box-sizing: border-box;
 }
@@ -80,7 +78,6 @@ export default {
   overflow: hidden;
   max-width: 850px;
   width: 100%;
->>>>>>> 6fc2524411a53930ffbc9a6e8272d51d614c5698
 }
 
 .login-image {
