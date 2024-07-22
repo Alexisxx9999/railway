@@ -1,4 +1,44 @@
 <template>
+<<<<<<< HEAD
+  <div class="card">
+    <div class="icon">&#128202;</div>
+    <h2>Usuarios</h2>
+    <p>Descripción corta</p>
+    <div class="statistic">100</div>
+    <router-link to="dashboard/usuarios">
+      <p>Usuarios</p>
+    </router-link>
+  </div>
+
+  <div class="card">
+    <div class="icon">&#x1f4c8;</div>
+    <h2>Mascotas</h2>
+    <p>Descripción breve</p>
+    <div class="statistic">200</div>
+    <router-link to="dashboard/mascotas">
+      <p>Mascotas</p>
+    </router-link>
+  </div>
+
+  <div class="card">
+    <div class="icon">&#x1f4b0;</div>
+    <h2>Vacunas</h2>
+    <p>Otra descripción</p>
+    <div class="statistic">300</div>
+    <router-link to="dashboard/vacunas">
+      <p>Vacunas</p>
+    </router-link>
+  </div>
+
+  <div class="card">
+    <div class="icon">&#x1f680;</div>
+    <h2>Adopciones</h2>
+    <p>Descripción genérica</p>
+    <div class="statistic">400</div>
+    <router-link to="dashboard/adopciones">
+      <p>Adopciones</p>
+    </router-link>
+=======
   <h1>Bienvenido a Pet Pocket</h1>
   <p>Una herramienta para gestion de veterinarios</p>
   <div class="card-container">
@@ -53,6 +93,7 @@
     <div class="estadistica">
       <canvas ref="barChart"></canvas>
     </div> -->
+>>>>>>> 6fc2524411a53930ffbc9a6e8272d51d614c5698
   </div>
 </template>
 
@@ -260,6 +301,38 @@ export default {
 };
 </script>
 <style scoped>
+<<<<<<< HEAD
+
+.card {
+  width: 150px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  margin-right: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  vertical-align: top;
+  text-align: center;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.card h2 {
+  margin-top: 0;
+}
+.card p {
+  font-size: 14px;
+  color: #666;
+}
+.statistic {
+  margin-top: 10px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+.icon {
+  font-size: 36px;
+  color: #007bff;
+=======
 .estadistica {
   width: 90%;
   margin: auto;
@@ -272,6 +345,7 @@ export default {
   margin: auto;
   text-align: center;
   padding: 10px;
+>>>>>>> 6fc2524411a53930ffbc9a6e8272d51d614c5698
   margin-bottom: 10px;
 }
 .card-container {

@@ -205,6 +205,7 @@ export default {
   margin-left: 50px;
   padding: 20px;
   width: calc(100% - 270px);
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .header-container {
