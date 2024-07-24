@@ -1,13 +1,13 @@
 <template>
   <CrudGeneral
-    nombre="Usuarios"
-    campo1="fecha"
-    campo2="nombre usuario"
-    campo3="mascotas"
-    campo4="descripcion"
-    campo5="acciones"
+    nombre="Usuario 🙎‍♂️"
+    campo1="Fecha:"
+    campo2="Nombre usuario"
+    campo3="Telefono"
+    campo4="Rol"
+    campo5="Acciones"
     titulo="Usuarios"
-    añadir="añadir usuario"
+    añadir="Añadir usuario"
   />
 </template>
 <script>

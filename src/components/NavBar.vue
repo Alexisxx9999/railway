@@ -29,18 +29,7 @@
 
   <div class="sidebar">
     <aside class="side-menu">
-      <div class="profile-info">
-        <br /><br /><br />
-        <div class="imgbox">
-          <img
-            class="foto"
-            src="https://i.pinimg.com/originals/90/eb/90/90eb907fde3833db6c0b58cbfae30f82.jpg"
-            alt=""
-            height="200"
-            width="270"
-          />
-        </div>
-      </div>
+      <div class="profile-info"><br /><br /><br /></div>
       <ol class="Navbar">
         <li>
           <a href="#"
@@ -73,7 +62,7 @@
         <li>
           <a href="#"
             ><router-link to="/dashboard/historial-medico"
-              ><i class="fas fa-folder"></i>Historial Medico</router-link
+              ><i class="fas fa-folder"></i>Registro Medico</router-link
             >
           </a>
         </li>

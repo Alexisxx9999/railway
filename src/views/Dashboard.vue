@@ -3,30 +3,30 @@
   <p>Una herramienta para gestion de veterinarios</p>
   <div class="card-container">
     <Card
-      title="total usuarios"
+      title="Total Usuarios"
       :value="totalPageViews"
       icon="fas fa-user-circle"
       bgColorClass="bg-orange"
       enlace="dashboard/usuarios"
     />
-
+    <i class="fa-solid fa-dog" style="color: #ffffff"></i>
     <Card
-      title="total de mascotas"
+      title="Total de Mascotas"
       :value="totalVisitors"
-      icon="fa-solid fa-dog fa-bounce"
+      icon="fa-solid fa-dog "
       bgColorClass="bg-light-orange"
       enlace="dashboard/mascotas"
     />
 
     <Card
-      title="total vacunas "
+      title="Total Vacunas "
       :value="1000"
-      icon="fa-solid fa-syringe fa-bounce"
+      icon="fa-solid fa-syringe "
       bgColorClass="bg-brown"
       enlace="dashboard/vacunas"
     />
     <Card
-      title="total adopciones"
+      title="Total Adopciones"
       :value="100"
       icon="fa-solid fa-shield-dog"
       bgColorClass="bg-yellow"
@@ -37,7 +37,7 @@
   <div>
     <div>
       <div class="estadistica">
-        <h3>usuarios y mascotas</h3>
+        <h3>Usuarios y Mascotas</h3>
         <canvas ref="lineChart"></canvas>
         <div></div>
       </div>

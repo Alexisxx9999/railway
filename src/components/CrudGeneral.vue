@@ -89,18 +89,29 @@
       <p>
         <strong>{{ campo2 }}</strong> {{ selectedPet.petName }}
       </p>
-      <p>
-        <strong>{{ campo3 }}</strong> {{ selectedPet.owner }}
-      </p>
+
       <p>
         <strong>{{ campo4 }}</strong> {{ selectedPet.description }}
+      </p>
+     
+      <p>
+        <strong>Reseña :</strong> <em>{{ selectedPet.petName }} </em> es una
+        mascota muy cariñosa que le gusta sentirse rodeada de afecto
+      </p>
+       <p>
+        <strong>{{ campo3 }}</strong> {{ selectedPet.owner }}
+         <div>
+          {{ opcional }}
+        </div>
       </p>
       <button @click="selectedPet = null" class="back-button">Cerrar</button>
     </div>
   </div>
 </template>
 <script>
+import { RouterView } from "vue-router";
 import ImageUploader from "../components/ImageUploader.vue";
+
 import Modal from "./Modal.vue";
 
 export default {
@@ -143,6 +154,9 @@ export default {
     añadir: {
       type: String,
       required: true,
+    },
+    opcional: {
+      type: String,
     },
   },
   data() {
@@ -197,7 +211,12 @@ export default {
         this.shouldShowImageUploader = true;
       } else if (route.name === "Usuarios") {
         this.shouldShowImageUploader = true;
-      } else {
+      } else if (route.name === "Adopciones") {
+        this.shouldShowImageUploader = true;
+      }else if (route.name === "Vacunas") {
+        this.shouldShowImageUploader = true;
+      }
+      else {
         this.shouldShowImageUploader = false; // Ocultar ImageUploader en otras vistas
       }
     },
@@ -434,11 +453,17 @@ tr:hover {
 /* Detalle de la mascota */
 .pet-details-container {
   display: flex;
-  justify-content: center;
+  width: 92%;
+  margin: auto;
+  flex-direction: row;
+  align-items: center;
+  background-color: #faf5f5;
+  padding: 2%;
+  border-radius: 10px;
 }
 
 .pet-details {
-  background-color: #faf5f5;
+  background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -448,7 +473,8 @@ tr:hover {
 }
 
 .pet-details h2 {
-  margin-bottom: 20px;
+  margin-bottom: 40px;
+  text-align: center;
 }
 
 .pet-details p {
@@ -456,15 +482,21 @@ tr:hover {
 }
 
 .back-button {
-  background-color: #007bff;
+  background-color: #ffcc5f;
   color: #fff;
   border: none;
   border-radius: 4px;
   padding: 10px 15px;
   cursor: pointer;
+  position: relative;
+  left: 90%;
+  margin-top: 20px;
 }
 
 .back-button:hover {
-  background-color: #0056b3;
+  background-color: orange;
+}
+.link {
+  text-decoration: none;
 }
 </style>

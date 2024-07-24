@@ -1,13 +1,13 @@
 <template>
   <CrudGeneral
-    nombre="Adopciones"
-    campo1="fecha"
-    campo2="nombre mascota"
-    campo3="usuario"
-    campo4="descripcion"
-    campo5="acciones"
-    titulo="adopciones"
-    añadir="añadir adopcion"
+    nombre="Adopciones 😺"
+    campo1="Fecha"
+    campo2="Nombre Mascota"
+    campo3="Dueño"
+    campo4="Descripcion"
+    campo5="Acciones"
+    titulo="Adopciones"
+    añadir="Añadir dopcion"
   />
 </template>
 <!-- Nombre de la Vacuna	 Tipo de Animal	 Fecha de Aplicación	 Descripción	 Acciones -->

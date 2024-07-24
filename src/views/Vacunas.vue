@@ -2,9 +2,9 @@
   <CrudGeneral
     nombre="Vacunas"
     campo1=" Fecha de Aplicación"
-    campo2="Nombre de la Vacuna"
-    campo3="Tipo de Animal"
-    campo4="descripcion"
+    campo2="Nombre de la mascota"
+    campo3="dueño"
+    campo4="motivo de vacuna"
     campo5="acciones"
     titulo="Vacunas"
     añadir="añadir vacunas"

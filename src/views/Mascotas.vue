@@ -1,13 +1,14 @@
 <template>
   <CrudGeneral
-    nombre="mascota"
-    campo1="fecha"
-    campo2="nombre mascota"
-    campo3="dueño"
-    campo4="descripcion"
-    campo5="acciones"
+    nombre="Mascota 🐕"
+    campo1="Fecha"
+    campo2="Nombre mascota"
+    campo3="Dueño"
+    campo4="Descripcion"
+    campo5="Acciones"
     titulo="Mascotas"
-    añadir="añadir mascota"
+    añadir="Añadir Mascota"
+    opcional=""
   />
 </template>
 

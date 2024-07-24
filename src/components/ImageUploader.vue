@@ -1,26 +1,39 @@
 <template>
-  <div
-    class="image-container"
-    @mouseover="showTooltip"
-    @mouseleave="hideTooltip"
-  >
-    <img
-      v-if="imageSrc"
-      :src="imageSrc"
-      alt="Click to upload"
-      @click="triggerFileInput"
-    />
-    <div v-else class="placeholder" @click="triggerFileInput">
-      &plus; selecciona una imagen
+  <div>
+    <div
+      class="image-container"
+      @mouseover="showTooltip"
+      @mouseleave="hideTooltip"
+    >
+      <transition name="fade">
+        <img
+          v-if="imageSrcs.length > 0"
+          :src="imageSrcs[currentImageIndex]"
+          alt="Click to upload"
+          @click="handleImageClick"
+          key="image"
+        />
+        <div v-else class="placeholder" @click="triggerFileInput">
+          &plus; selecciona una imagen
+        </div>
+      </transition>
+      <input
+        type="file"
+        ref="fileInput"
+        accept="image/*"
+        @change="loadImage"
+        style="display: none"
+      />
+      <div v-if="showTooltipMessage" class="tooltip">{{ tooltipMessage }}</div>
+      <div v-if="imageSrcs.length > 0" class="image-index-tooltip">
+        Imagen {{ currentImageIndex + 1 }} de {{ imageSrcs.length }}
+      </div>
     </div>
-    <input
-      type="file"
-      ref="fileInput"
-      accept="image/*"
-      @change="loadImage"
-      style="display: none"
-    />
-    <div v-if="showTooltipMessage" class="tooltip">Seleccionar otra imagen</div>
+    <div class="buttons" v-if="imageSrcs.length > 0">
+      <button @click="prevImage">⬅</button>
+      <button @click="nextImage">➡</button>
+      <button @click="removeCurrentImage">🗑 Eliminar</button>
+    </div>
   </div>
 </template>
 
@@ -28,8 +41,10 @@
 export default {
   data() {
     return {
-      imageSrc: null,
+      imageSrcs: [],
+      currentImageIndex: 0,
       showTooltipMessage: false,
+      tooltipMessage: "Seleccionar otra imagen",
     };
   },
   methods: {
@@ -41,18 +56,54 @@ export default {
       if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
-          this.imageSrc = e.target.result;
+          if (this.imageSrcs.length < 3) {
+            this.imageSrcs.push(e.target.result);
+            this.currentImageIndex = this.imageSrcs.length - 1;
+            if (this.imageSrcs.length === 3) {
+              this.tooltipMessage = "Número máximo de imágenes";
+            }
+          }
         };
         reader.readAsDataURL(file);
       }
     },
     showTooltip() {
-      if (this.imageSrc) {
+      if (this.imageSrcs.length > 0) {
         this.showTooltipMessage = true;
       }
     },
     hideTooltip() {
       this.showTooltipMessage = false;
+    },
+    prevImage() {
+      if (this.imageSrcs.length > 0) {
+        this.currentImageIndex =
+          (this.currentImageIndex - 1 + this.imageSrcs.length) %
+          this.imageSrcs.length;
+      }
+    },
+    nextImage() {
+      if (this.imageSrcs.length > 0) {
+        this.currentImageIndex =
+          (this.currentImageIndex + 1) % this.imageSrcs.length;
+      }
+    },
+    removeCurrentImage() {
+      if (this.imageSrcs.length > 0) {
+        this.imageSrcs.splice(this.currentImageIndex, 1);
+        if (this.imageSrcs.length === 0) {
+          this.currentImageIndex = 0;
+        } else {
+          this.currentImageIndex =
+            this.currentImageIndex % this.imageSrcs.length;
+        }
+        this.tooltipMessage = "Seleccionar otra imagen";
+      }
+    },
+    handleImageClick() {
+      if (this.imageSrcs.length < 3) {
+        this.triggerFileInput();
+      }
     },
   },
 };
@@ -61,8 +112,8 @@ export default {
 <style scoped>
 .image-container {
   position: relative;
-  width: 20%;
-  height: 220px;
+  width: 300px; /* Fijar el ancho del contenedor */
+  height: 350px; /* Fijar la altura del contenedor */
   border: 1px solid #ccc;
   display: flex;
   align-items: center;
@@ -71,6 +122,7 @@ export default {
   margin-top: 35px;
   margin-right: 20px;
   border-radius: 4%;
+  overflow: hidden; /* Ensure content doesn't overflow */
 }
 
 .image-container img {
@@ -78,6 +130,7 @@ export default {
   height: 100%;
   object-fit: cover;
   border-radius: 10px;
+  transition: opacity 0.5s; /* Apply transition */
 }
 
 .placeholder {
@@ -102,5 +155,52 @@ export default {
   border-radius: 5px;
   font-size: 12px;
   white-space: nowrap;
+}
+
+.image-index-tooltip {
+  position: absolute;
+  top: 10px;
+  left: 82%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.buttons button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.buttons button:hover {
+  background-color: #0056b3;
+}
+
+.buttons button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Transitions */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0;
 }
 </style>
