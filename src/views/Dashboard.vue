@@ -4,7 +4,7 @@
   <div class="card-container">
     <Card
       title="Total Usuarios"
-      :value="totalPageViews"
+      value="1"
       icon="fas fa-user-circle"
       bgColorClass="bg-orange"
       enlace="dashboard/usuarios"
@@ -12,7 +12,7 @@
     <i class="fa-solid fa-dog" style="color: #ffffff"></i>
     <Card
       title="Total de Mascotas"
-      :value="totalVisitors"
+      value="2"
       icon="fa-solid fa-dog "
       bgColorClass="bg-light-orange"
       enlace="dashboard/mascotas"
@@ -20,14 +20,14 @@
 
     <Card
       title="Total Vacunas "
-      :value="1000"
+      :value="1"
       icon="fa-solid fa-syringe "
       bgColorClass="bg-brown"
       enlace="dashboard/vacunas"
     />
     <Card
       title="Total Adopciones"
-      :value="100"
+      :value="2"
       icon="fa-solid fa-shield-dog"
       bgColorClass="bg-yellow"
       enlace="dashboard/adopciones"
@@ -60,6 +60,7 @@
 import Card from "../components/Card.vue";
 import { ref, onMounted, computed } from "vue";
 import { Chart, registerables } from "chart.js";
+import axios from "../plugins/axios";
 Chart.register(...registerables);
 export default {
   name: "Dashboard",

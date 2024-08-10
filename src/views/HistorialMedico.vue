@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="header-container">
-      <h1>Registro Médico</h1>
+      <h1>🏥 Registro Médico</h1>
       <div class="user-info">
         <span>Usuario Admin</span>
       </div>
@@ -21,22 +21,21 @@
             <th><i class="fas fa-calendar-alt"></i> Fecha</th>
             <th><i class="fas fa-user"></i> Nombre Mascota</th>
             <th><i class="fas fa-id-card-alt"></i> Categoría</th>
-            <th><i class="fas fa-at"></i> Descripción</th>
             <th><i class="fas fa-cog"></i> Acciones</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="record in filteredMedicalHistory" :key="record.id">
+          <tr v-for="record in paginatedMedicalHistory" :key="record.id">
             <td>{{ record.date }}</td>
-            <td>{{ record.petName }}</td>
+            <td></td>
             <td>{{ record.category }}</td>
-            <td>{{ record.description }}</td>
             <td class="actions">
               <i class="fas fa-edit" @click="editRecord(record)"></i>
               <i class="fas fa-trash-alt" @click="deleteRecord(record.id)"></i>
             </td>
           </tr>
-          <tr v-if="filteredMedicalHistory.length === 0">
+
+          <tr v-if="paginatedMedicalHistory.length === 0">
             <td colspan="5" style="text-align: center">
               No se encontraron registros
             </td>
@@ -44,6 +43,18 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Botones de paginación -->
+    <div class="pagination-controls">
+      <button @click="previousPage" :disabled="currentPage === 1">
+        &laquo; Anterior
+      </button>
+      <span>Página {{ currentPage }} de {{ totalPages }}</span>
+      <button @click="nextPage" :disabled="currentPage === totalPages">
+        Siguiente &raquo;
+      </button>
+    </div>
+
     <button @click="goBack" class="back-button">Regresar</button>
 
     <!-- Formulario flotante para editar o agregar nuevo registro -->
@@ -95,40 +106,39 @@
         </form>
       </div>
     </div>
+    <div v-if="showDetails" class="details-container">
+      <h2>Detalles del Registro</h2>
+      <p><strong>Nombre Mascota:</strong> {{ currentRecord.petName }}</p>
+      <p><strong>Categoría:</strong> {{ currentRecord.category }}</p>
+      <p><strong>Fecha:</strong> {{ currentRecord.date }}</p>
+      <button @click="cancelEdit">Cerrar</button>
+    </div>
   </div>
 </template>
 
 <script>
+import instance from "../plugins/axios";
 export default {
   name: "HistorialMedico",
   data() {
     return {
-      medicalHistory: [
-        {
-          id: 1,
-          petName: "Bella",
-          category: "Perro",
-          date: "2023-01-01",
-          description: "Vacunación",
-        },
-        {
-          id: 2,
-          petName: "Milo",
-          category: "Gato",
-          date: "2023-02-15",
-          description: "Revisión médica",
-        },
-      ],
+      medicalHistory: [],
+      adopciones: [],
+      vacunas: [],
+      pets: [],
       currentRecord: {
         id: null,
         petName: "",
         category: "",
+
         date: "",
-        description: "",
       },
       editing: false,
       showForm: false,
       searchTerm: "",
+      currentPage: 1,
+      recordsPerPage: 5,
+      showDetails: false,
     };
   },
   computed: {
@@ -142,15 +152,64 @@ export default {
         );
       }
     },
+    totalPages() {
+      return Math.ceil(
+        this.filteredMedicalHistory.length / this.recordsPerPage
+      );
+    },
+    paginatedMedicalHistory() {
+      const start = (this.currentPage - 1) * this.recordsPerPage;
+      const end = start + this.recordsPerPage;
+      return this.filteredMedicalHistory.slice(start, end);
+    },
   },
   methods: {
+    async obtenerCsrfToken() {
+      try {
+        const response = await instance.get("/"); // Endpoint para obtener el token CSRF
+        return response.data.csrfToken;
+      } catch (error) {
+        console.error("Error al obtener el token CSRF:", error.message);
+        throw new Error("No se pudo obtener el token CSRF");
+      }
+    },
+    async getAdopciones() {
+      try {
+        const response = await instance.get("/adopciones");
+        console.log(response.data);
+        this.adopciones = response.data;
+      } catch (error) {
+        console.error("Error fetching adopciones:", error);
+      }
+    },
+    async getVacunas() {
+      try {
+        const response = await instance.get("/vacunas");
+        console.log(response.data);
+        this.vacunas = response.data;
+      } catch (error) {
+        console.error("Error fetching vacunas:", error);
+      }
+    },
+    async getPets() {
+      try {
+        const response = await instance.get("/mascotas");
+        console.log(response.data);
+        this.pets = response.data;
+      } catch (error) {
+        console.error("Error fetching mascotas:", error);
+      }
+    },
+    getPetName(idMascota) {
+      const pet = this.pets.find((p) => p.idMascota === idMascota);
+      return pet ? pet.nombreMascota : "Nombre no disponible";
+    },
     editRecord(record) {
       this.currentRecord = { ...record };
       this.editing = true;
       this.showForm = true;
     },
     deleteRecord(recordId) {
-      // Mostrar una alerta de confirmación antes de eliminar
       if (
         window.confirm(
           "¿Estás seguro de que quieres eliminar este registro médico?"
@@ -164,11 +223,9 @@ export default {
     },
     searchHistory() {
       // Aquí puedes añadir lógica adicional para buscar el historial según los criterios necesarios
-      // Por ahora, solo estamos filtrando localmente en la lista existente
     },
     saveRecord() {
       if (this.editing) {
-        // Modificar registro existente
         const index = this.medicalHistory.findIndex(
           (record) => record.id === this.currentRecord.id
         );
@@ -176,11 +233,14 @@ export default {
           this.medicalHistory.splice(index, 1, { ...this.currentRecord });
         }
       } else {
-        // Agregar nuevo registro
         this.currentRecord.id = this.medicalHistory.length + 1; // Asumiendo que los IDs son únicos y autoincrementables
         this.medicalHistory.push({ ...this.currentRecord });
       }
       this.cancelEdit();
+    },
+    viewDetails(record) {
+      this.currentRecord = { ...record };
+      this.showDetails = true;
     },
     cancelEdit() {
       this.currentRecord = {
@@ -196,6 +256,21 @@ export default {
     goBack() {
       this.$router.go(-1);
     },
+    previousPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+      }
+    },
+  },
+  mounted() {
+    this.getAdopciones();
+    this.getVacunas();
+    this.getPets();
   },
 };
 </script>
@@ -204,8 +279,8 @@ export default {
 .content {
   margin-left: 50px;
   padding: 20px;
-  width: calc(100% - 270px);
-  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  width: 90%;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
 
 .header-container {
@@ -369,5 +444,27 @@ tr:hover {
 
 .button-group button:hover {
   background-color: #0056b3;
+}
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination-controls button {
+  margin: 0 5px;
+  padding: 10px;
+  font-size: 14px;
+  background-color: orange;
+  border: none;
+  border-radius: 10px;
+  color: white;
+}
+.pagination-controls button:hover {
+  background-color: orangered;
+}
+.pagination-controls span {
+  margin: 0 10px;
+  font-size: 16px;
 }
 </style>

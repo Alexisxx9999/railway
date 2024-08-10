@@ -36,6 +36,13 @@
             v-model="currentPet.description"
           ></textarea>
         </div>
+        <div class="form-group">
+          <label for="description">{{ campo6 }}</label>
+          <textarea
+            id="description"
+            v-model="currentPet.description"
+          ></textarea>
+        </div>
         <button type="submit">
           {{ editing ? "Guardar " : "Agregar " }} {{ nombre }}
         </button>

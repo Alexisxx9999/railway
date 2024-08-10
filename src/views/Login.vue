@@ -16,11 +16,7 @@
             <input type="password" id="password" v-model="password" required />
           </div>
 
-          <router-link to="/Dashboard">
-            <button type="submit" class="btn btn-primary">
-              Iniciar Sesión
-            </button>
-          </router-link>
+          <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
         </form>
         <p>
           No tienes una cuenta aun ?
@@ -32,19 +28,56 @@
 </template>
 
 <script>
+import instance from "../plugins/axios";
+import Swal from "sweetalert2";
+
 export default {
   name: "Login",
   data() {
     return {
       email: "",
       password: "",
+      rememberMe: false,
+      error: false,
+      errorMessage: "",
     };
   },
   methods: {
-    login() {
-      // Mock login
-      localStorage.setItem("auth", "true");
-      this.$router.push({ name: "Dashboard" });
+    async login() {
+      try {
+        // Obtener el token CSRF
+        const csrfResponse = await instance.get("/");
+        const csrfToken = csrfResponse.data.csrfToken;
+
+        // Enviar la solicitud de login
+        const response = await instance.post(
+          "/login",
+          {
+            emailUsuario: this.email,
+            contraseñaUsuario: this.password,
+          },
+          {
+            headers: {
+              "X-CSRF-Token": csrfToken, // Incluir el token CSRF en los encabezados
+            },
+          }
+        );
+        Swal.fire({
+          icon: "success",
+          title: response.data.message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+
+        // Redirigir si la autenticación es exitosa
+        this.$router.push(response.data.redirect || "/");
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error al iniciar Sesion",
+          text: error.response ? error.response.data.message : error.message,
+        });
+      }
     },
   },
 };

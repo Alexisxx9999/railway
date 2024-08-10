@@ -39,71 +39,71 @@
 
 <script>
 export default {
+  props: {
+    modelValue: String,
+  },
   data() {
     return {
       imageSrcs: [],
       currentImageIndex: 0,
       showTooltipMessage: false,
-      tooltipMessage: "Seleccionar otra imagen",
+      tooltipMessage: "",
     };
+  },
+  watch: {
+    imageSrcs: {
+      handler(newValue) {
+        if (newValue.length > 0) {
+          this.$emit("update:modelValue", newValue[this.currentImageIndex]);
+        } else {
+          this.$emit("update:modelValue", "");
+        }
+      },
+      immediate: true,
+    },
   },
   methods: {
     triggerFileInput() {
       this.$refs.fileInput.click();
+    },
+    handleImageClick() {
+      this.triggerFileInput();
     },
     loadImage(event) {
       const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
-          if (this.imageSrcs.length < 3) {
-            this.imageSrcs.push(e.target.result);
-            this.currentImageIndex = this.imageSrcs.length - 1;
-            if (this.imageSrcs.length === 3) {
-              this.tooltipMessage = "Número máximo de imágenes";
-            }
-          }
+          this.imageSrcs.push(e.target.result);
+          this.currentImageIndex = this.imageSrcs.length - 1;
+          this.$emit("update:modelValue", e.target.result);
         };
         reader.readAsDataURL(file);
       }
     },
-    showTooltip() {
-      if (this.imageSrcs.length > 0) {
-        this.showTooltipMessage = true;
-      }
-    },
-    hideTooltip() {
-      this.showTooltipMessage = false;
-    },
     prevImage() {
-      if (this.imageSrcs.length > 0) {
-        this.currentImageIndex =
-          (this.currentImageIndex - 1 + this.imageSrcs.length) %
-          this.imageSrcs.length;
+      if (this.currentImageIndex > 0) {
+        this.currentImageIndex--;
       }
     },
     nextImage() {
-      if (this.imageSrcs.length > 0) {
-        this.currentImageIndex =
-          (this.currentImageIndex + 1) % this.imageSrcs.length;
+      if (this.currentImageIndex < this.imageSrcs.length - 1) {
+        this.currentImageIndex++;
       }
     },
     removeCurrentImage() {
-      if (this.imageSrcs.length > 0) {
-        this.imageSrcs.splice(this.currentImageIndex, 1);
-        if (this.imageSrcs.length === 0) {
-          this.currentImageIndex = 0;
-        } else {
-          this.currentImageIndex =
-            this.currentImageIndex % this.imageSrcs.length;
-        }
-        this.tooltipMessage = "Seleccionar otra imagen";
+      this.imageSrcs.splice(this.currentImageIndex, 1);
+      if (this.currentImageIndex > 0) {
+        this.currentImageIndex--;
       }
     },
-    handleImageClick() {
-      if (this.imageSrcs.length < 3) {
-        this.triggerFileInput();
-      }
+    showTooltip() {
+      this.showTooltipMessage = true;
+      this.tooltipMessage = "Click para cambiar la imagen";
+    },
+    hideTooltip() {
+      this.showTooltipMessage = false;
+      this.tooltipMessage = "";
     },
   },
 };

@@ -1,367 +1,610 @@
 <template>
   <div class="content">
     <div class="header-container">
-      <h1>Vacunas</h1>
+      <h1>Vacunas 💉</h1>
       <div class="user-info">
         <span>Usuario Admin</span>
       </div>
-      <div class="search-container">
-        <button @click="toggleForm" class="add-button">Agendar Cita</button>
+      <div>
+        <button @click="showAddForm" class="add-button">Añadir Vacuna</button>
       </div>
     </div>
-    <div v-if="citaAgendada" class="details-container">
-      <h2>Detalles de la Cita</h2>
-      <table class="details-table">
+    <div class="form-container" v-if="showForm">
+      <h2 class="title2">{{ editing ? "Editar " : "Agregar " }} Vacuna</h2>
+      <form @submit.prevent="submitForm" class="form-principal">
+        <div class="inf">
+          <div class="form-group">
+            <label for="idMascota" class="title">Nombre de la Mascota</label>
+            <select
+              name="idMascota"
+              id="idMascota"
+              required
+              v-model="currentPet.idMascota"
+              class="form-control"
+            >
+              <option
+                v-for="pet in pets"
+                :key="pet.idMascota"
+                :value="pet.idMascota"
+              >
+                {{ pet.nombreMascota }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="descripcion" class="title">Información adicional</label>
+            <textarea
+              id="descripcion"
+              v-model="currentPet.descripcion"
+              class="form-control"
+              rows="4"
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="idEnfermedad" class="title"
+              >Nombre de la Enfermedad</label
+            >
+            <select
+              name="idEnfermedad"
+              id="idEnfermedad"
+              required
+              v-model="currentPet.idEnfermedad"
+              class="form-control"
+            >
+              <option
+                v-for="enfermedad in enfermedades"
+                :key="enfermedad.idEnfermedad"
+                :value="enfermedad.idEnfermedad"
+              >
+                {{ enfermedad.nombreEnfermedad }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-buttons">
+            <button type="submit" class="btn btn-primary">
+              {{ editing ? "Guardar" : "Agregar" }}
+            </button>
+            <button type="button" @click="cancelEdit" class="btn btn-secondary">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="table-container">
+      <table>
         <thead>
           <tr>
-            <th>Campo</th>
-            <th>Detalle</th>
+            <th><i class="fas fa-calendar-alt"></i> Fecha:</th>
+            <th><i class="fas fa-user"></i> Nombre de Mascota</th>
+            <th><i class="fas fa-id-card-alt"></i> Enfermedad</th>
+            <th><i class="fas fa-at"></i> Descripcion</th>
+            <th><i class="fas fa-at"></i> Acciones</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Nombre del Dueño</td>
-            <td>{{ dueno }}</td>
-          </tr>
-          <tr>
-            <td>Tipo de Mascota</td>
-            <td>{{ getMascotasSeleccionadas() }}</td>
-          </tr>
-          <tr>
-            <td>Interesado en</td>
-            <td>{{ getInteresesSeleccionados() }}</td>
-          </tr>
-          <tr>
-            <td>Enfermedad</td>
-            <td>{{ enfermedad }}</td>
-          </tr>
-          <tr>
-            <td>Fecha</td>
-            <td>{{ fecha }}</td>
-          </tr>
-          <tr>
-            <td>Hora</td>
-            <td>{{ hora }}</td>
-          </tr>
-          <tr>
-            <td>Dirección</td>
-            <td>{{ direccion }}</td>
+          <tr v-for="pet in vacunas" :key="pet.idVacuna">
+            <td>{{ pet.createVacuna }}</td>
+            <td>{{ getPetName(pet.idMascota) }}</td>
+            <td>{{ getEnfermedadesName(pet.idEnfermedad) }}</td>
+            <td>{{ pet.descripcion }}</td>
+            <td class="actions">
+              <i class="fas fa-eye" @click="viewDetails(pet.idVacuna)"></i>
+              <i class="fas fa-edit" @click="editPet(pet.idVacuna)"></i>
+              <i class="fas fa-trash-alt" @click="deletePet(pet.idVacuna)"></i>
+            </td>
           </tr>
         </tbody>
       </table>
-      <button @click="cancelarCita" class="back-button">Regresar</button>
-    </div>
-    <div v-if="showForm" class="form-container">
-      <div class="form-group">
-        <label>Nombre del dueño:</label>
-        <input type="text" v-model="dueno" id="dueno" />
-        <span v-if="showAlert && !dueno && !isFormComplete" class="alert">Este campo está vacío</span>
-      </div>
-      <div class="form-group">
-        <label>Escoge tu mascota:</label>
-        <div>
-          <label>Perro <input type="checkbox" v-model="mascota.perro" /></label>
-          <label>Gato <input type="checkbox" v-model="mascota.gato" /></label>
-          <label>Conejo <input type="checkbox" v-model="mascota.conejo" /></label>
-          <label>Aves <input type="checkbox" v-model="mascota.aves" /></label>
-          <label>Otros <input type="checkbox" v-model="mascota.otros" /></label>
-        </div>
-        <span v-if="showAlert && !isMascotaSelected && !isFormComplete" class="alert">Este campo está vacío</span>
-      </div>
-      <div class="form-group">
-        <label>Interesado en:</label>
-        <div>
-          <label>Fracturas <input type="checkbox" v-model="interes.fracturas" /></label>
-          <label>Esterilización <input type="checkbox" v-model="interes.esterilizacion" /></label>
-          <label>Desparacitación <input type="checkbox" v-model="interes.desparacitacion" /></label>
-          <label>Consulta <input type="checkbox" v-model="interes.consulta" /></label>
-          <label>Enfermedad:</label>
-          <select v-model="enfermedad" id="enfermedad">
-            <option value="">Seleccione una enfermedad</option>
-            <option value="parvovirosis">Parvovirosis</option>
-            <option value="moquillo">Moquillo</option>
-            <option value="hepatitis_infecciosa">Hepatitis Infecciosa</option>
-            <option value="laringotraqueitis_infecciosa">Laringotraqueitis Infecciosa</option>
-            <option value="rabia">Rabia</option>
-          </select>
-        </div>
-        <span v-if="showAlert && !isInteresSelected && !isFormComplete" class="alert">Este campo está vacío</span>
-      </div>
-      <div class="form-group">
-        <label for="fecha">Fecha:</label>
-        <input type="date" v-model="fecha" id="fecha" />
-        <span v-if="showAlert && !fecha && !isFormComplete" class="alert">Este campo está vacío</span>
-      </div>
-      <div class="form-group">
-        <label for="hora">Hora:</label>
-        <input type="time" v-model="hora" id="hora" />
-        <span v-if="showAlert && !hora && !isFormComplete" class="alert">Este campo está vacío</span>
-      </div>
-      <div class="form-group">
-        <label for="direccion">Dirección:</label>
-        <input type="text" v-model="direccion" id="direccion" />
-        <span v-if="showAlert && !direccion && !isFormComplete" class="alert">Este campo está vacío</span>
-      </div>
-      <div class="button-container">
-        <button @click="agendarCita" class="submit-button">Enviar</button>
-        <button @click="cancelarCita" class="cancel-button">Cancelar</button>
-      </div>
-      <span v-if="showAlert && !isFormComplete" class="alert">Los campos no están completamente llenos</span>
     </div>
     <button @click="goBack" class="back-button">Regresar</button>
+    <!-- Modal para confirmación de eliminación -->
+    <Modal
+      v-if="showModal"
+      :show="showModal"
+      title="Confirmar Eliminación"
+      message="¿Estás seguro de que quieres eliminar esta vacuna?"
+      @confirm="confirmDelete"
+      @cancel="cancelDelete"
+    />
+    <!-- Sección para mostrar el detalle de la mascota -->
+    <div v-if="selectedPet" class="pet-details-container">
+      <div class="pet-details">
+        <h2>Detalle de la Vacuna:</h2>
+        <p><strong>Fecha de Vacuna: </strong> {{ selectedPet.createVacuna }}</p>
+        <p>
+          <strong>Tipo de enfermedad: </strong>
+          {{
+            getEnfermedadesDetails(selectedPet.idEnfermedad).nombreEnfermedad
+          }}
+        </p>
+        <p>
+          <strong>Descripcion de la Vacuna: </strong>
+          {{ selectedPet.descripcion }}
+        </p>
+
+        <h4>Informacion de la mascota vacunada 😻</h4>
+        <div class="mascota">
+          <div class="imageMascota">
+            <img src="" alt="imagen de la Mascota" />
+          </div>
+          <div class="inf-mascota">
+            <p>
+              <strong>Nombre de la mascota: </strong>
+              {{ getPetDetails(selectedPet.idMascota).nombreMascota }}
+            </p>
+            <p>
+              <strong>Sexo: </strong>
+              {{ getPetDetails(selectedPet.idMascota).sexo }}
+            </p>
+            <p>
+              <strong>Especie de la mascota: </strong>
+              {{ getPetDetails(selectedPet.idMascota).idTipoMascota }}
+            </p>
+            <p>
+              <strong>descripcion de la mascota </strong>
+              {{ getPetDetails(selectedPet.idMascota).descripcion }}
+            </p>
+          </div>
+        </div>
+
+        <button @click="selectedPet = null" class="back-button">Cerrar</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import ImageUploader from "../components/ImageUploader.vue";
+import Modal from "../components/Modal.vue";
+
+import instance from "../plugins/axios"; // Ajusta la ruta
+
 export default {
+  name: "Vacunas",
+  components: {
+    ImageUploader,
+    Modal,
+  },
   data() {
     return {
-      searchTerm: '',
-      dueno: '',
-      mascota: {
-        perro: false,
-        gato: false,
-        conejo: false,
-        aves: false,
-        otros: false
+      pets: [],
+      enfermedades: [],
+      vacunas: [],
+      currentPet: {
+        idVacuna: "",
+        idMascota: "",
+        idEnfermedad: "",
+        descripcion: "",
+        createVacuna: "",
       },
-      interes: {
-        fracturas: false,
-        esterilizacion: false,
-        desparacitacion: false,
-        consulta: false,
-      },
-      enfermedad: '',
-      fecha: '',
-      hora: '',
-      direccion: '',
-      mensaje: '',
-      showAlert: false,
+      editing: false,
       showForm: false,
-      citaAgendada: false
+      selectedPet: null,
+      showModal: false,
+      petToDelete: null,
+      shouldShowImageUploader: false,
     };
   },
-  computed: {
-    isMascotaSelected() {
-      return Object.values(this.mascota).some(value => value);
+  watch: {
+    $route(to) {
+      this.updateImageUploaderProps(to);
     },
-    isInteresSelected() {
-      return Object.values(this.interes).some(value) || this.enfermedad;
-    },
-    isFormComplete() {
-      return this.dueno && this.isMascotaSelected && this.isInteresSelected && this.fecha && this.hora && this.direccion;
-    }
   },
   methods: {
-    searchHistory() {
-      console.log('Buscando historial médico para:', this.searchTerm);
-    },
-    goBack() {
-      this.$router.go(-1);
-    },
-    toggleForm() {
-      this.showForm = !this.showForm;
-    },
-    agendarCita() {
-      this.showAlert = true;
-      if (this.isFormComplete) {
-        this.mensaje = 'Su cita ha sido agendada';
-        this.citaAgendada = true;
-        console.log('Cita agendada:', {
-          dueno: this.dueno,
-          mascota: this.mascota,
-          interes: this.interes,
-          enfermedad: this.enfermedad,
-          fecha: this.fecha,
-          hora: this.hora,
-          direccion: this.direccion
-        });
-        
-        this.resetForm();
+    updateImageUploaderProps(route) {
+      // Actualiza los props según la ruta actual
+      if (route.name === "Mascotas") {
+        this.shouldShowImageUploader = true;
+      } else if (route.name === "Usuarios") {
+        this.shouldShowImageUploader = true;
+      } else if (route.name === "Adopciones") {
+        this.shouldShowImageUploader = true;
+      } else if (route.name === "Vacunas") {
+        this.shouldShowImageUploader = true;
       } else {
-        this.mensaje = '';
+        this.shouldShowImageUploader = false; // Ocultar ImageUploader en otras vistas
       }
     },
-    cancelarCita() {
-      this.resetForm();
-      this.showForm = false;
-      this.citaAgendada = false;
+    async obtenerCsrfToken() {
+      try {
+        const response = await instance.get("/"); // Endpoint para obtener el token CSRF
+        return response.data.csrfToken;
+      } catch (error) {
+        console.error("Error al obtener el token CSRF:", error.message);
+        throw new Error("No se pudo obtener el token CSRF");
+      }
+    },
+    async getPets() {
+      try {
+        const response = await instance.get("/mascotas");
+        console.log(response.data);
+        this.pets = response.data;
+      } catch (error) {
+        console.error("Error fetching mascotas:", error);
+      }
+    },
+    async submitForm() {
+      try {
+        const csrfToken = await this.obtenerCsrfToken();
+        instance.defaults.headers.common["X-CSRF-Token"] = csrfToken;
+
+        if (this.editing) {
+          await instance.patch(
+            `/vacunas/${this.currentPet.idVacuna}`,
+            this.currentPet
+          );
+        } else {
+          await instance.post("/vacunas", this.currentPet);
+        }
+        this.getVacunas();
+        this.resetForm();
+      } catch (error) {
+        console.error("Error submitting form:", error);
+      }
+    },
+    async getEnfermedades() {
+      try {
+        const response = await instance.get("/enfermedades");
+        console.log(response.data); // Verifica que response.data contiene los datos esperados
+        this.enfermedades = response.data;
+        console.log(this.enfermedades); // Verifica que this.enfermedades se está llenando correctamente
+      } catch (error) {
+        console.error("Error fetching enfermedades:", error);
+      }
+    },
+
+    async getVacunas() {
+      try {
+        const response = await instance.get("/vacunas");
+        console.log(response.data);
+        this.vacunas = response.data;
+      } catch (error) {
+        console.error("Error fetching vacunas:", error);
+      }
+    },
+    getPetName(idMascota) {
+      const pet = this.pets.find((p) => p.idMascota === idMascota);
+      return pet ? pet.nombreMascota : "Nombre no disponible";
+    },
+
+    getEnfermedadesName(idEnfermedad) {
+      const enfermedad = this.enfermedades.find(
+        (u) => u.idEnfermedad === idEnfermedad
+      );
+      return enfermedad ? enfermedad.nombreEnfermedad : "Nombre no disponible";
+    },
+    editPet(id) {
+      this.editing = true;
+      this.currentPet = {
+        ...this.vacunas.find((pet) => pet.idVacuna === id),
+      };
+      this.showForm = true;
+    },
+    getPetDetails(idMascota) {
+      return this.pets.find((p) => p.idMascota === idMascota) || {};
+    },
+
+    getEnfermedadesDetails(idEnfermedad) {
+      return (
+        this.enfermedades.find((u) => u.idEnfermedad === idEnfermedad) || {}
+      );
+    },
+    viewDetails(id) {
+      this.selectedPet = this.vacunas.find((pet) => pet.idVacuna === id);
+    },
+
+    async deletePet(id) {
+      this.petToDelete = id;
+      this.showModal = true;
+    },
+    async confirmDelete() {
+      try {
+        await instance.delete(`/vacunas/${this.petToDelete}`);
+        this.getVacunas();
+        this.showModal = false;
+        this.petToDelete = null;
+      } catch (error) {
+        console.error("Error deleting vacuna:", error);
+      }
+    },
+    cancelDelete() {
+      this.showModal = false;
+      this.petToDelete = null;
     },
     resetForm() {
-      this.dueno = '';
-      this.mascota = {
-        perro: false,
-        gato: false,
-        conejo: false,
-        aves: false,
-        otros: false
+      this.currentPet = {
+        idVacuna: "",
+        idMascota: "",
+        idEnfermedad: "",
+        descripcion: "",
+        createVacuna: "",
       };
-      this.interes = {
-        fracturas: false,
-        esterilizacion: false,
-        desparacitacion: false,
-        consulta: false,
-      };
-      this.enfermedad = '';
-      this.fecha = '';
-      this.hora = '';
-      this.direccion = '';
-      this.showAlert = false;
+      this.editing = false;
+      this.showForm = false;
     },
-    getMascotasSeleccionadas() {
-      const selected = [];
-      for (const [key, value] of Object.entries(this.mascota)) {
-        if (value) selected.push(key);
-      }
-      return selected.join(', ');
+    showAddForm() {
+      this.resetForm();
+      this.showForm = true;
     },
-    getInteresesSeleccionados() {
-      const selected = [];
-      for (const [key, value] of Object.entries(this.interes)) {
-        if (value) selected.push(key);
-      }
-      return selected.join(', ');
-    }
-  }
+    cancelEdit() {
+      this.resetForm();
+      this.showForm = false;
+    },
+    goBack() {
+       this.$router.go(-1);
+    },
+  },
+  mounted() {
+    this.getVacunas();
+    this.getPets();
+    this.getEnfermedades();
+
+    this.updateImageUploaderProps(this.$route);
+  },
 };
 </script>
 
 <style scoped>
+/* Estilos generales */
 .content {
-  margin-left: 50px;
+  margin: 20px;
   padding: 20px;
-  width: calc(100% - 270px);
-  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 10px;
 }
 
+/* Encabezado */
 .header-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #d1d8dd;
-  padding: 25px;
-  border-radius: 10px;
-  margin-bottom: 20px;
+  background-color: #e1e8ed;
+  padding: 20px;
+  border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
+.imageMascota {
+  width: 40%;
+  padding: 10px;
+}
+.imageUsuario {
+  width: 40%;
+  padding: 10px;
+}
 .header-container h1 {
   margin: 0;
-  font-size: 24px;
+  font-size: 28px;
 }
 
-.search-container {
-  display: flex;
-  align-items: center;
-}
-
-.search-container input {
-  padding: 10px;
-  margin-right: 10px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
-
-.search-button,
 .add-button {
   background-color: #28a745;
-  color: white;
+  color: #fff;
   border: none;
   border-radius: 4px;
   padding: 10px 15px;
   cursor: pointer;
 }
 
-.search-button:hover,
 .add-button:hover {
   background-color: #218838;
 }
-
+.title2 {
+  text-align: center;
+}
+/* Formulario */
 .form-container {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
   margin-top: 20px;
+}
+.form-principal {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.inf {
+  display: flex;
+  flex-direction: column;
 }
 
 .form-group {
   margin-bottom: 15px;
 }
 
-.form-group label {
+.title {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 8px;
+  font-weight: bold;
   display: block;
-  margin-bottom: 5px;
 }
 
-.form-group div label {
-  display: inline-flex;
-  align-items: center;
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 14px;
+  color: #333;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+textarea.form-control {
+  resize: vertical;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+button[type="submit"],
+button[type="button"] {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
   margin-right: 10px;
 }
 
-.form-group select,
-.form-group input {
-  width: 100%;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
-
-.button-container {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.submit-button {
+button[type="submit"] {
   background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 10px 15px;
-  cursor: pointer;
 }
 
-.submit-button:hover {
+button[type="submit"]:hover {
   background-color: #0056b3;
 }
 
-.cancel-button {
+button[type="button"] {
   background-color: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 10px 15px;
-  cursor: pointer;
 }
 
-.cancel-button:hover {
+button[type="button"]:hover {
   background-color: #c82333;
 }
 
-.back-button {
+/* Tabla */
+.table-container {
   margin-top: 20px;
-  background-color: #007bff;
-  color: white;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+th,
+td {
+  padding: 12px;
+  text-align: left;
+}
+
+th {
+  background-color: #ffcc5f;
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+.actions i {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.actions i:hover {
+  color: #007bff;
+}
+
+/* Detalle de la mascota */
+.pet-details-container {
+  display: flex;
+  width: 95%;
+  margin: auto;
+  flex-direction: row;
+  align-items: center;
+  background-color: #faf5f5;
+  padding: 2%;
+  border-radius: 10px;
+}
+
+.pet-details {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 950px;
+}
+
+.pet-details h2 {
+  margin-bottom: 40px;
+  text-align: center;
+}
+.pet-details h4 {
+  background-color: #f5dfdf;
+}
+.pet-details p {
+  margin: 10px 0;
+}
+.mascota {
+  display: flex;
+  flex-direction: row;
+}
+.usuario {
+  display: flex;
+  flex-direction: row;
+}
+
+.back-button {
+  background-color: #ffcc5f;
+  color: #fff;
   border: none;
   border-radius: 4px;
   padding: 10px 15px;
   cursor: pointer;
+  position: relative;
+  left: 90%;
+  margin-top: 20px;
 }
 
 .back-button:hover {
-  background-color: #0056b3;
+  background-color: orange;
 }
-
-.mensaje-container {
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #d4edda;
-  border: 1px solid #c3e6cb;
-  border-radius: 4px;
-  color: #155724;
-}
-
-.alert {
-  color: red;
-  font-size: 12px;
+.link {
+  text-decoration: none;
 }
 </style>

@@ -1,4 +1,3 @@
-<!-- src/views/Register.vue -->
 <template>
   <div class="signup-container">
     <div class="signup-form">
@@ -7,37 +6,80 @@
       </div>
       <div class="signup-fields">
         <img src="../assets/logo.png" class="img" alt="" />
-
         <p>Crea una cuenta en pet pocket</p>
-        <form @submit.prevent="signUp">
+        <form @submit.prevent="createUsers">
           <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" id="name" v-model="name" required />
+            <label for="name">Nombres</label>
+            <input
+              type="text"
+              id="nombreUsuario"
+              name="nombreUsuario"
+              v-model="user.nombreUsuario"
+              required
+            />
           </div>
           <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" v-model="email" required />
+            <label for="apellidoUsuario">Apellidos</label>
+            <input
+              type="text"
+              id="apellidoUsuario"
+              v-model="user.apellidoUsuario"
+              name="apellidoUsuario"
+              required
+            />
           </div>
           <div class="form-group">
-            <label for="cedula">Cédula</label>
-            <input type="text" id="cedula" v-model="cedula" required />
+            <label for="emailUsuario">Email</label>
+            <input
+              type="email"
+              name="emailUsuario"
+              id="emailUsuario"
+              v-model="user.emailUsuario"
+              required
+              pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+              title="Por favor, ingresa un correo electrónico válido"
+            />
           </div>
           <div class="form-group">
-            <label for="telefono">Teléfono</label>
-            <input type="text" id="telefono" v-model="telefono" required />
+            <label for="cedulaUsuario">Cédula</label>
+            <input
+              type="text"
+              id="cedulaUsuario"
+              v-model="user.cedulaUsuario"
+              name="cedulaUsuario"
+              required
+              pattern="\d{10}"
+              title="La cédula debe contener exactamente 10 dígitos numéricos"
+            />
           </div>
           <div class="form-group">
-            <label for="password">Contraseña</label>
-            <input type="password" id="password" v-model="password" required />
+            <label for="telefonoUsuario">Teléfono</label>
+            <input
+              type="text"
+              id="telefonoUsuario"
+              v-model="user.telefonoUsuario"
+              name="telefonoUsuario"
+              required
+              pattern="\d{10}"
+              title="el numero telefonico debe ser de 10 digitos"
+            />
           </div>
-          <router-link to="/">
-            <button type="submit" class="btn btn-primary">Registrate</button>
-          </router-link>
+          <div class="form-group">
+            <label for="contraseñaUsuario">Contraseña</label>
+            <input
+              type="password"
+              id="contraseñaUsuario"
+              v-model="user.contraseñaUsuario"
+              name="contraseñaUsuario"
+              required
+              minlength="8"
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">Registrate</button>
         </form>
-
         <p>
           ¿Ya tienes una cuenta?
-          <router-link to="/">Haz click aquí </router-link>
+          <router-link to="/">Haz click aquí</router-link>
         </p>
       </div>
     </div>
@@ -45,23 +87,78 @@
 </template>
 
 <script>
+import instance from "../plugins/axios";
+import Swal from "sweetalert2";
+
 export default {
   name: "Register",
   data() {
     return {
-      email: "",
-      password: "",
+      user: {
+        nombreUsuario: "",
+        apellidoUsuario: "",
+        emailUsuario: "",
+        cedulaUsuario: "",
+        telefonoUsuario: "",
+        contraseñaUsuario: "",
+      },
+      csrfToken: "",
     };
   },
   methods: {
-    register() {
-      // Mock registration
-      localStorage.setItem("auth", "true");
-      this.$router.push({ name: "Dashboard" });
+    async obtenerCsrfToken() {
+      try {
+        const response = await instance.get("/"); // Asegúrate de que este endpoint devuelva el token CSRF
+        this.csrfToken = response.data.csrfToken;
+        return this.csrfToken;
+      } catch (error) {
+        console.error("Error al obtener el token CSRF:", error.message);
+        throw new Error("No se pudo obtener el token CSRF");
+      }
     },
+    async createUsers() {
+      try {
+        if (!this.csrfToken) {
+          this.csrfToken = await this.obtenerCsrfToken();
+        }
+
+        console.log("Datos enviados:", this.user); // Verifica los datos enviados
+
+        const response = await instance.post("/Register", this.user, {
+          headers: {
+            "X-CSRF-Token": this.csrfToken,
+          },
+        });
+
+        if (response.data.redirect) {
+          this.$router.push(response.data.redirect);
+        } else {
+          console.log("Registro exitoso:", response.data.message);
+        }
+        Swal.fire({
+          icon: "success",
+          title: response.data.message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error al registrarse",
+          text: error.response ? error.response.data.message : error.message,
+        });
+      }
+    },
+  },
+  async created() {
+    await this.obtenerCsrfToken();
   },
 };
 </script>
+
+<style scoped>
+/* Estilos aquí */
+</style>
 
 <style scoped>
 .signup-container {
