@@ -14,7 +14,7 @@
           key="image"
         />
         <div v-else class="placeholder" @click="triggerFileInput">
-          &plus; selecciona una imagen
+          + Selecciona una imagen
         </div>
       </transition>
       <input
@@ -44,7 +44,7 @@ export default {
   },
   data() {
     return {
-      imageSrcs: [],
+      imageSrcs: this.loadImagesFromLocalStorage(),
       currentImageIndex: 0,
       showTooltipMessage: false,
       tooltipMessage: "",
@@ -53,6 +53,7 @@ export default {
   watch: {
     imageSrcs: {
       handler(newValue) {
+        this.saveImagesToLocalStorage(newValue);
         if (newValue.length > 0) {
           this.$emit("update:modelValue", newValue[this.currentImageIndex]);
         } else {
@@ -104,6 +105,13 @@ export default {
     hideTooltip() {
       this.showTooltipMessage = false;
       this.tooltipMessage = "";
+    },
+    loadImagesFromLocalStorage() {
+      const storedImages = localStorage.getItem("imageSrcs");
+      return storedImages ? JSON.parse(storedImages) : [];
+    },
+    saveImagesToLocalStorage(images) {
+      localStorage.setItem("imageSrcs", JSON.stringify(images));
     },
   },
 };

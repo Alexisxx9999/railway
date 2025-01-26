@@ -163,6 +163,7 @@ export default {
 <style scoped>
 .signup-container {
   display: flex;
+  width: 90%;
   height: 100vh;
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   justify-content: center;

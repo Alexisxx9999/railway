@@ -18,25 +18,33 @@
       <table>
         <thead>
           <tr>
-            <th><i class="fas fa-calendar-alt"></i> Fecha</th>
+            <th><i class="fas fa-user"></i> Fecha</th>
             <th><i class="fas fa-user"></i> Nombre Mascota</th>
             <th><i class="fas fa-id-card-alt"></i> Categoría</th>
+            <th><i class="fas fa-calendar-alt"></i> diagnostico</th>
             <th><i class="fas fa-cog"></i> Acciones</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="record in paginatedMedicalHistory" :key="record.id">
-            <td>{{ record.date }}</td>
-            <td></td>
-            <td>{{ record.category }}</td>
+          <tr
+            v-for="record in paginatedMedicalHistory"
+            :key="record.idHistorial"
+          >
+            <td>{{ record.createHistory }}</td>
+            <td>{{ getPetName(record.idMascota) }}</td>
+            <td>{{ record.especialidad }}</td>
+            <td>{{ record.diagnostico }}</td>
             <td class="actions">
-              <i class="fas fa-edit" @click="editRecord(record)"></i>
-              <i class="fas fa-trash-alt" @click="deleteRecord(record.id)"></i>
+              <!-- <i class="fas fa-edit" @click="editRecord(record)"></i> -->
+              <i
+                class="fas fa-trash-alt"
+                @click="deleteRecord(record.idHistorial)"
+              ></i>
             </td>
           </tr>
 
           <tr v-if="paginatedMedicalHistory.length === 0">
-            <td colspan="5" style="text-align: center">
+            <td colspan="4" style="text-align: center">
               No se encontraron registros
             </td>
           </tr>
@@ -56,44 +64,24 @@
     </div>
 
     <button @click="goBack" class="back-button">Regresar</button>
-
+    <Modal
+      v-if="showModal"
+      :show="showModal"
+      title="Confirmar Eliminación"
+      message="¿Estás seguro de que quieres eliminar este registro ? "
+      @confirm="confirmDelete"
+      @cancel="cancelDelete"
+    />
     <!-- Formulario flotante para editar o agregar nuevo registro -->
     <div v-if="showForm" class="form-container">
       <div class="form-modal">
         <h2>{{ editing ? "Editar Registro" : "Agregar Nuevo Registro" }}</h2>
         <form @submit.prevent="saveRecord">
           <div class="input-group">
-            <label for="petName">Nombre Mascota:</label>
-            <input
-              type="text"
-              id="petName"
-              v-model="currentRecord.petName"
-              required
-            />
-          </div>
-          <div class="input-group">
-            <label for="category">Categoría:</label>
-            <input
-              type="text"
-              id="category"
-              v-model="currentRecord.category"
-              required
-            />
-          </div>
-          <div class="input-group">
-            <label for="date">Fecha:</label>
-            <input
-              type="date"
-              id="date"
-              v-model="currentRecord.date"
-              required
-            />
-          </div>
-          <div class="input-group">
-            <label for="description">Descripción:</label>
+            <label for="diagnosis">Diagnóstico:</label>
             <textarea
-              id="description"
-              v-model="currentRecord.description"
+              id="diagnosis"
+              v-model="currentRecord.diagnostico"
               required
             ></textarea>
           </div>
@@ -108,30 +96,35 @@
     </div>
     <div v-if="showDetails" class="details-container">
       <h2>Detalles del Registro</h2>
-      <p><strong>Nombre Mascota:</strong> {{ currentRecord.petName }}</p>
-      <p><strong>Categoría:</strong> {{ currentRecord.category }}</p>
-      <p><strong>Fecha:</strong> {{ currentRecord.date }}</p>
-      <button @click="cancelEdit">Cerrar</button>
+      <p>
+        <strong>Nombre Mascota:</strong>
+        {{ getPetName(currentRecord.idMascota) }}
+      </p>
+      <p><strong>Categoría:</strong> {{ currentRecord.especialidad }}</p>
+      <p><strong>Diagnóstico:</strong> {{ currentRecord.diagnostico }}</p>
+      <button type="button" @click="cancelEdit">Cancelar</button>
     </div>
   </div>
 </template>
 
 <script>
 import instance from "../plugins/axios";
+import Modal from "../components/Modal.vue";
+
 export default {
   name: "HistorialMedico",
+  components: {
+    Modal,
+  },
   data() {
     return {
       medicalHistory: [],
-      adopciones: [],
-      vacunas: [],
       pets: [],
       currentRecord: {
-        id: null,
-        petName: "",
-        category: "",
-
-        date: "",
+        idHistorial: null,
+        idMascota: "",
+        especialidad: "",
+        diagnostico: "",
       },
       editing: false,
       showForm: false,
@@ -139,6 +132,8 @@ export default {
       currentPage: 1,
       recordsPerPage: 5,
       showDetails: false,
+      showModal: false,
+      deleteHistory: null,
     };
   },
   computed: {
@@ -148,7 +143,9 @@ export default {
       } else {
         const normalizedSearch = this.searchTerm.trim().toLowerCase();
         return this.medicalHistory.filter((record) =>
-          record.petName.toLowerCase().includes(normalizedSearch)
+          this.getPetName(record.idMascota)
+            .toLowerCase()
+            .includes(normalizedSearch)
         );
       }
     },
@@ -173,67 +170,76 @@ export default {
         throw new Error("No se pudo obtener el token CSRF");
       }
     },
-    async getAdopciones() {
+    async deleteRecord(id) {
+      this.deleteHistory = id;
+      this.showModal = true;
+    },
+    async confirmDelete() {
       try {
-        const response = await instance.get("/adopciones");
-        console.log(response.data);
-        this.adopciones = response.data;
+        // Obtener el token CSRF
+        const csrfToken = await this.obtenerCsrfToken();
+
+        // Realizar la solicitud DELETE con el token CSRF en los encabezados
+        await instance.delete(`/historiales/${this.deleteHistory}`, {
+          headers: {
+            "X-CSRF-Token": csrfToken,
+          },
+        });
+
+        // Actualizar la lista de registros
+        this.getHistorial();
+
+        // Cerrar el modal y limpiar el ID
+        this.showModal = false;
+        this.deleteHistory = null;
       } catch (error) {
-        console.error("Error fetching adopciones:", error);
+        console.error("Error deleting historial:", error);
       }
     },
-    async getVacunas() {
-      try {
-        const response = await instance.get("/vacunas");
-        console.log(response.data);
-        this.vacunas = response.data;
-      } catch (error) {
-        console.error("Error fetching vacunas:", error);
-      }
+
+    cancelDelete() {
+      this.showModal = false;
+      this.deleteHistory = null;
     },
+
     async getPets() {
       try {
         const response = await instance.get("/mascotas");
-        console.log(response.data);
         this.pets = response.data;
       } catch (error) {
         console.error("Error fetching mascotas:", error);
       }
     },
+    async getHistorial() {
+      try {
+        const response = await instance.get("/historiales");
+        this.medicalHistory = response.data;
+      } catch (error) {
+        console.error("Error fetching historiales:", error);
+      }
+    },
     getPetName(idMascota) {
       const pet = this.pets.find((p) => p.idMascota === idMascota);
-      return pet ? pet.nombreMascota : "Nombre no disponible";
+      return pet ? pet.nombreMascota : "Desconocido";
     },
     editRecord(record) {
       this.currentRecord = { ...record };
       this.editing = true;
       this.showForm = true;
     },
-    deleteRecord(recordId) {
-      if (
-        window.confirm(
-          "¿Estás seguro de que quieres eliminar este registro médico?"
-        )
-      ) {
-        this.medicalHistory = this.medicalHistory.filter(
-          (record) => record.id !== recordId
-        );
-        console.log("Registro médico eliminado:", recordId);
-      }
-    },
     searchHistory() {
-      // Aquí puedes añadir lógica adicional para buscar el historial según los criterios necesarios
+      // Lógica de búsqueda adicional si es necesario
     },
     saveRecord() {
       if (this.editing) {
         const index = this.medicalHistory.findIndex(
-          (record) => record.id === this.currentRecord.id
+          (record) => record.idHistorial === this.currentRecord.idHistorial
         );
         if (index !== -1) {
           this.medicalHistory.splice(index, 1, { ...this.currentRecord });
         }
       } else {
-        this.currentRecord.id = this.medicalHistory.length + 1; // Asumiendo que los IDs son únicos y autoincrementables
+        this.currentRecord.idHistorial = this.medicalHistory.length + 1; // Asumiendo que los IDs son únicos y autoincrementables
         this.medicalHistory.push({ ...this.currentRecord });
       }
       this.cancelEdit();
@@ -244,11 +250,10 @@ export default {
     },
     cancelEdit() {
       this.currentRecord = {
-        id: null,
-        petName: "",
-        category: "",
-        date: "",
-        description: "",
+        idHistorial: null,
+        idMascota: "",
+        especialidad: "",
+        diagnostico: "",
       };
       this.editing = false;
       this.showForm = false;
@@ -268,9 +273,8 @@ export default {
     },
   },
   mounted() {
-    this.getAdopciones();
-    this.getVacunas();
     this.getPets();
+    this.getHistorial();
   },
 };
 </script>

@@ -122,9 +122,6 @@
 
         <h4>Informacion de la mascota adoptada 😻</h4>
         <div class="mascota">
-          <div class="imageMascota">
-            <img src="" alt="imagen de la Mascota" />
-          </div>
           <div class="inf-mascota">
             <p>
               <strong>Nombre de la mascota: </strong>

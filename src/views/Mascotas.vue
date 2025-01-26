@@ -96,7 +96,8 @@
             <label for="petName" class="title">Selecciona una imagen</label>
             <ImageUploader
               v-if="shouldShowImageUploader"
-              v-model="currentPet.imageMascota"
+              :initialImage="storedImage"
+              @update:modelValue="handleImageUpdate"
             />
           </div>
         </div>
@@ -166,10 +167,6 @@
               <em>{{ selectedPet.descripcion }}</em>
             </p>
           </div>
-
-          <div class="image-2">
-            <img src="" alt="imagen de la Mascota" />
-          </div>
         </div>
 
         <h4>Informacion general del dueño 👧</h4>
@@ -193,9 +190,6 @@
               <strong>Email del Dueño: </strong>
               {{ getUserDetails(selectedPet.idUsuario).emailUsuario }}
             </p>
-          </div>
-          <div class="image-2">
-            <img src="" alt="imagen del usuario" />
           </div>
         </div>
 
@@ -385,7 +379,7 @@ export default {
       this.showForm = false;
     },
     goBack() {
-       this.$router.go(-1);
+      this.$router.go(-1);
     },
   },
   mounted() {
@@ -619,11 +613,18 @@ tr:hover {
   width: 30%;
   position: relative;
   left: 175px;
-  background-color: #dae0e6;
+
   height: 200px;
 }
 .usuario {
   display: flex;
   flex-direction: row;
+}
+@media (max-width: 700px) {
+  .content {
+    width: 100%;
+    overflow-x: scroll;
+    max-width: 600px;
+  }
 }
 </style>

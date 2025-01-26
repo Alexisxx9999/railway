@@ -181,7 +181,8 @@ export default {
   }
 
   .login-image {
-    height: 200px;
+    margin-top: 400px;
+    width: 100%;
     background-size: cover;
   }
 }

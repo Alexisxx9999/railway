@@ -27,7 +27,7 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
 
 .main-container {
@@ -40,5 +40,14 @@ export default {
   padding: 20px;
   margin-left: 250px; /* Ajuste para el menú lateral */
   margin-top: 60px; /* Ajuste para la barra de navegación */
+}
+@media (max-width: 700px) {
+  .main-content {
+    width: 100%;
+    text-align: center;
+    margin-left: 0px; /* Ajuste para el menú lateral */
+    margin: auto;
+    max-width: 700px;
+  }
 }
 </style>

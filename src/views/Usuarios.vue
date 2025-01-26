@@ -89,16 +89,6 @@
           </button>
           <button type="button" @click="cancelEdit">Cancelar</button>
         </div>
-
-        <div class="image">
-          <div class="form-group">
-            <label for="petName" class="title">Selecciona una imagen</label>
-            <ImageUploader
-              v-if="shouldShowImageUploader"
-              v-model="currentPet.imageUsuario"
-            />
-          </div>
-        </div>
       </form>
     </div>
     <div class="table-container">
@@ -317,7 +307,7 @@ export default {
       this.showForm = false;
     },
     goBack() {
-       this.$router.go(-1);
+      this.$router.go(-1);
     },
   },
   mounted() {
@@ -330,6 +320,7 @@ export default {
 <style scoped>
 /* Estilos generales */
 .content {
+  width: 90%;
   margin: 20px;
   padding: 20px;
   background-color: #f9f9f9;

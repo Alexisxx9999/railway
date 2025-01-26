@@ -126,9 +126,7 @@
 
         <h4>Informacion de la mascota vacunada 😻</h4>
         <div class="mascota">
-          <div class="imageMascota">
-            <img src="" alt="imagen de la Mascota" />
-          </div>
+        
           <div class="inf-mascota">
             <p>
               <strong>Nombre de la mascota: </strong>
@@ -301,7 +299,12 @@ export default {
     },
     async confirmDelete() {
       try {
-        await instance.delete(`/vacunas/${this.petToDelete}`);
+        const csrfToken = await this.obtenerCsrfToken();
+        await instance.delete(`/vacunas/${this.petToDelete}`, {
+          headers: {
+            "X-CSRF-Token": csrfToken,
+          },
+        });
         this.getVacunas();
         this.showModal = false;
         this.petToDelete = null;
@@ -333,7 +336,7 @@ export default {
       this.showForm = false;
     },
     goBack() {
-       this.$router.go(-1);
+      this.$router.go(-1);
     },
   },
   mounted() {
